@@ -262,7 +262,9 @@ public class PowerUI extends SystemUI {
             d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
             d.getWindow().getAttributes().privateFlags |=
                     WindowManager.LayoutParams.PRIVATE_FLAG_SHOW_FOR_ALL_USERS;
-            d.show();
+            //glg 201501023---begin
+            //deleted/d.show();
+            //glg---end
             mLowBatteryDialog = d;
         }
     }

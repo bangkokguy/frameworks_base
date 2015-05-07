@@ -223,6 +223,44 @@ class TelephonyIcons {
         R.drawable.ic_qs_signal_lte,
         R.drawable.ic_qs_signal_full_lte
     };
-
+//glg 20150106---begin
+//insert/
+	static final int[][] PHONE_DATA_IN = {
+            { R.drawable.stat_sys_phone_in_0,
+              R.drawable.stat_sys_phone_in_1,
+              R.drawable.stat_sys_phone_in_2,
+              R.drawable.stat_sys_phone_in_3,
+              R.drawable.stat_sys_phone_in_4 },
+            { R.drawable.stat_sys_phone_in_0,
+              R.drawable.stat_sys_phone_in_full_1,
+              R.drawable.stat_sys_phone_in_full_2,
+              R.drawable.stat_sys_phone_in_full_3,
+              R.drawable.stat_sys_phone_in_full_4 }
+        };
+	static final int[][] PHONE_DATA_OUT = {
+            { R.drawable.stat_sys_phone_out_0,
+              R.drawable.stat_sys_phone_out_1,
+              R.drawable.stat_sys_phone_out_2,
+              R.drawable.stat_sys_phone_out_3,
+              R.drawable.stat_sys_phone_out_4 },
+            { R.drawable.stat_sys_phone_out_0,
+              R.drawable.stat_sys_phone_out_full_1,
+              R.drawable.stat_sys_phone_out_full_2,
+              R.drawable.stat_sys_phone_out_full_3,
+              R.drawable.stat_sys_phone_out_full_4 }
+        };
+	static final int[][] PHONE_DATA_INOUT = {
+            { R.drawable.stat_sys_phone_inout_0,
+              R.drawable.stat_sys_phone_inout_1,
+              R.drawable.stat_sys_phone_inout_2,
+              R.drawable.stat_sys_phone_inout_3,
+              R.drawable.stat_sys_phone_inout_4 },
+            { R.drawable.stat_sys_phone_inout_0,
+              R.drawable.stat_sys_phone_inout_full_1,
+              R.drawable.stat_sys_phone_inout_full_2,
+              R.drawable.stat_sys_phone_inout_full_3,
+              R.drawable.stat_sys_phone_inout_full_4 }
+        };
+//glg---end
 }
 

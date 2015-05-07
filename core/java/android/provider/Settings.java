@@ -2638,7 +2638,12 @@ public final class Settings {
          * @hide
          */
         public static final String BATTERY_LIGHT_LOW_COLOR = "battery_light_low_color";
-
+		/**
+         * What color to use for the battery LED while charging - low
+         * @hide
+         */
+        public static final String BATTERY_LIGHT_COLOR_TRANSITION_COLORS = "battery_light_color_transition";
+        
         /**
          * What color to use for the battery LED while charging - medium
          * @hide

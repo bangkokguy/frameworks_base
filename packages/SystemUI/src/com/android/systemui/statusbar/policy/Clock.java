@@ -159,7 +159,11 @@ public class Clock extends TextView implements DemoMode, OnClickListener, OnLong
     final void updateClock() {
         if (mDemoMode) return;
         mCalendar.setTimeInMillis(System.currentTimeMillis());
-        setText(getSmallTime());
+        //glg 20150123---begin
+        //deleted/setText(getSmallTime());
+        //inserted/
+        setText(">"+getSmallTime()); //insert new char - just for test
+        setTextColor(-16711936); //green
     }
 
     private final CharSequence getSmallTime() {

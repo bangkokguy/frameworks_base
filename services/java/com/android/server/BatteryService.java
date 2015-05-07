@@ -53,6 +53,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+//glg 20150124---begin
+//instert:
+import android.graphics.Color;
+//glg---end
+
 /**
  * <p>BatteryService monitors the charging status, and charge level of the device
  * battery.  When these values change this service broadcasts the new values
@@ -86,7 +91,11 @@ import java.io.PrintWriter;
 public final class BatteryService extends IBatteryService.Stub {
     private static final String TAG = BatteryService.class.getSimpleName();
 
-    private static final boolean DEBUG = false;
+//glg 20150107-begin
+//commented out/
+//private static final boolean DEBUG = false;
+//inserted/
+    private static final boolean DEBUG = true;
 
     private static final int BATTERY_SCALE = 100;    // battery capacity is a percentage
 
@@ -923,7 +932,7 @@ public final class BatteryService extends IBatteryService.Stub {
         private final int mBatteryLedOff;
 
         public Led(Context context, LightsService lights) {
-            mBatteryLight = lights.getLight(LightsService.LIGHT_ID_BATTERY);
+            mBatteryLight = lights.getLight(LightsService./*LIGHT_ID_NOTIFICATIONS);*/LIGHT_ID_BATTERY);
 
             // Does the Device support changing battery LED colors?
             mMultiColorLed = context.getResources().getBoolean(
@@ -934,60 +943,115 @@ public final class BatteryService extends IBatteryService.Stub {
             mBatteryLedOff = context.getResources().getInteger(
                     com.android.internal.R.integer.config_notificationsBatteryLedOff);
         }
+//glg 20150124---begin
+//insert:
+		/**-------------------------------------------------------------
+         * setLEDColor()     
+         * @TO-DO: implement
+         * 		mBatteryLowARGB
+		 *		mBatteryMediumARGB
+         *  	mBatteryFullARGB
+         */
+        public int setLEDColor(int BatteryLevel) {
+            int j = BatteryLevel/(100/6);
+            int r = 0, g = 0, b = 0, barColor = 0;
+            int grade= (BatteryLevel%(100/6))*255/(100/6);
+            switch (j) {
+                case 0: //0-16 red_to_pink         255,0:255,0   ---> pink to red
+                    r = 255;
+                    g = 0;
+                    b = 255-grade;
+                    break;
+                case 1: //17-33 pink_to_orange      255:0,255,0 ---> red to orange
+                    r = 255;
+                    g = grade/2;
+                    b = 0; //255-(int)(grade)*2;if (b<0)b=0;
+                    break;
+                case 2: //34-50 orange_to_yellow   0,255,0:255
+                    r = 255;
+                    g = 128+ grade/2;
+                    b = 0;
+                    break;
+                case 3: //51-66 yellow_to_green    0,255:0,255
+                    r = 255-grade;
+                    g = 255;
+                    b = 0;
+                    break;
+                case 4: //67-83 green_to_cyan         0:255,0,255
+                    r = 0;
+                    g = 255;
+                    b = grade;
+                    break;
+                case 5: //84-100 cyan_to_blue
+                    r = 0;
+                    g = 255-grade;
+                    b = 255;
+                    break;
+                default:
+                    r = 255;
+                    g = 255;
+                    b = 255;
+                    break;
+            }
+            barColor = Color.argb(255, r, g, b);
+            return barColor;
+        }
+/*glg---end*/
 
         /**
          * Synchronize on BatteryService.
+         * 
+         * glg 20150123---begin this is the place for charging leds turn on/off---end
+         * ok then:
+         * 1.) if no lights enabled, than: no lights!!!
+         * 2.) if not charging than no lights, except: low battery alarm!  status != BatteryManager.BATTERY_STATUS_CHARGING
+         * 3.) if charging, than light is on, except in quiet hours! LIGHT_ID_BATTERY  LIGHT_ID_NOTIFICATIONS
          */
+        private boolean mLEDTurnedOn = true; //true for the first time, so the led will be explicitly turned off
         public void updateLightsLocked() {
-            // mBatteryProps could be null on startup (called by SettingsObserver)
+			
+            // mBatteryProps could be null on startup (called by SettingsObserver); if null then exit
             if (mBatteryProps == null) {
                 Slog.w(TAG, "updateLightsLocked: mBatteryProps is null; skipping");
                 return;
             }
+            // No lights enabled: turn off LED and exit
+            if (!mLightEnabled) {
+                if(mLEDTurnedOn){mBatteryLight.turnOff(); mLEDTurnedOn=false;}
+                return;
+			}
 
             final int level = mBatteryProps.batteryLevel;
             final int status = mBatteryProps.batteryStatus;
-            if (!mLightEnabled) {
-                // No lights if explicitly disabled
-                mBatteryLight.turnOff();
-            } else if (QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM)) {
-                if (mLedPulseEnabled && level < mLowBatteryWarningLevel &&
-                        status != BatteryManager.BATTERY_STATUS_CHARGING) {
-                    // The battery is low, the device is not charging and the low battery pulse
-                    // is enabled - ignore Quiet Hours
-                    mBatteryLight.setFlashing(mBatteryLowARGB, LightsService.LIGHT_FLASH_TIMED,
-                            mBatteryLedOn, mBatteryLedOff);
-                } else {
-                    // No lights if in Quiet Hours and battery not low
-                    mBatteryLight.turnOff();
-                }
-            } else if (level < mLowBatteryWarningLevel) {
-                if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
-                    // Battery is charging and low
-                    mBatteryLight.setColor(mBatteryLowARGB);
-                } else if (mLedPulseEnabled) {
-                    // Battery is low and not charging
-                    mBatteryLight.setFlashing(mBatteryLowARGB, LightsService.LIGHT_FLASH_TIMED,
-                            mBatteryLedOn, mBatteryLedOff);
-                } else {
-                    // "Pulse low battery light" is disabled, no lights.
-                    mBatteryLight.turnOff();
-                }
-            } else if (status == BatteryManager.BATTERY_STATUS_CHARGING
-                        || status == BatteryManager.BATTERY_STATUS_FULL) {
-                if (status == BatteryManager.BATTERY_STATUS_FULL || level >= 90) {
-                    // Battery is full or charging and nearly full
-                    mBatteryLight.setColor(mBatteryFullARGB);
-                } else {
-                    // Battery is charging and halfway full
-                    mBatteryLight.setColor(mBatteryMediumARGB);
-                }
-            } else {
-                // No lights if not charging and not low
-                mBatteryLight.turnOff();
-            }
-        }
-    }
+			final int mColor = setLEDColor(level);
+			
+			// if not charging than no lights, except: low battery alarm!
+			if (status != BatteryManager.BATTERY_STATUS_CHARGING) {
+				if (level <= mLowBatteryWarningLevel) {
+					// LED pulse is enabled
+					if (mLedPulseEnabled) {
+						mBatteryLight.setFlashing(mColor, LightsService.LIGHT_FLASH_TIMED, mBatteryLedOn, mBatteryLedOff);
+						mLEDTurnedOn=true;
+					// LED pulse is NOT enabled	
+					} else {
+						mBatteryLight.setColor(mColor);
+						mLEDTurnedOn=true;
+					}
+				} else {
+					if(mLEDTurnedOn){mBatteryLight.turnOff(); mLEDTurnedOn=false;}
+				}
+			} else {
+				// Battery is charging, quiet hours: no light
+				if (QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM)) {
+					if(mLEDTurnedOn){mBatteryLight.turnOff(); mLEDTurnedOn=false;}
+				} else {
+					// Battery is charging, no quiet hours: turn on light
+					mBatteryLight.setColor(mColor);
+					mLEDTurnedOn=true;
+				}
+			}
+		}
+	}
 
     private final class BatteryListener extends IBatteryPropertiesListener.Stub {
         public void batteryPropertiesChanged(BatteryProperties props) {
@@ -1014,6 +1078,10 @@ public final class BatteryService extends IBatteryService.Stub {
             // Light colors
             if (mMultiColorLed) {
                 // Register observer if we have a multi color led
+                
+                resolver.registerContentObserver(Settings.System.getUriFor(
+                        Settings.System.BATTERY_LIGHT_LOW_COLOR), false, this);
+                
                 resolver.registerContentObserver(Settings.System.getUriFor(
                         Settings.System.BATTERY_LIGHT_LOW_COLOR), false, this);
                 resolver.registerContentObserver(Settings.System.getUriFor(
@@ -1065,5 +1133,4 @@ public final class BatteryService extends IBatteryService.Stub {
             updateLedPulse();
         }
     }
-
 }

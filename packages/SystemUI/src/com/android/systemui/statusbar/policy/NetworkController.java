@@ -186,6 +186,10 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
     public interface SignalCluster {
         void setWifiIndicators(boolean visible, int strengthIcon, int activityIcon,
                 String contentDescription);
+//glg 20150103---begin
+//insert/
+		void setGlgText(String textValue);
+//glg---end
         void setMobileDataIndicators(boolean visible, int strengthIcon, int activityIcon,
                 int typeIcon, String contentDescription, String typeContentDescription,
                 int noSimIcon);
@@ -380,6 +384,17 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
                 mWifiIconId,
                 mWifiActivityIconId,
                 mContentDescriptionWifi);
+//glg 20150103---begin
+//insert/
+        if (mWifiSsid==null) cluster.setGlgText (" <>");
+        else {
+			//IndexOutOfBoundsException	if start < 0, start > end or end > length(). 
+			int glgi=mWifiSsid.length()-1;
+			if (glgi>8)glgi=8;
+			cluster.setGlgText (" "+mWifiSsid.substring(1, glgi));
+			}
+//glg 20150103--end
+
 
         cluster.setEthernetIndicators(
                 // only show ethernet in the cluster if connected
@@ -1223,18 +1238,34 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
             if (mDataConnected) {
                 combinedSignalIconId = mDataSignalIconId;
                 switch (mDataActivity) {
+//glg 20150106---begin
+//commented out/
+//                    case TelephonyManager.DATA_ACTIVITY_IN:
+//                        mMobileActivityIconId = R.drawable.stat_sys_signal_in;
+//                        break;
+//                    case TelephonyManager.DATA_ACTIVITY_OUT:
+//                        mMobileActivityIconId = R.drawable.stat_sys_signal_out;
+//                        break;
+//                    case TelephonyManager.DATA_ACTIVITY_INOUT:
+//                        mMobileActivityIconId = R.drawable.stat_sys_signal_inout;
+//                        break;
+//                    default:
+//                        mMobileActivityIconId = R.drawable.stat_sys_signal_noinout;
+//                        break;
+//inserted/
                     case TelephonyManager.DATA_ACTIVITY_IN:
-                        mMobileActivityIconId = R.drawable.stat_sys_signal_in;
+                        mMobileActivityIconId = TelephonyIcons.PHONE_DATA_IN[mInetCondition][mLastSignalLevel];
                         break;
                     case TelephonyManager.DATA_ACTIVITY_OUT:
-                        mMobileActivityIconId = R.drawable.stat_sys_signal_out;
+                        mMobileActivityIconId = TelephonyIcons.PHONE_DATA_OUT[mInetCondition][mLastSignalLevel];
                         break;
                     case TelephonyManager.DATA_ACTIVITY_INOUT:
-                        mMobileActivityIconId = R.drawable.stat_sys_signal_inout;
+                        mMobileActivityIconId = TelephonyIcons.PHONE_DATA_INOUT[mInetCondition][mLastSignalLevel];
                         break;
                     default:
                         mMobileActivityIconId = R.drawable.stat_sys_signal_noinout;
                         break;
+//glg---end
                 }
 
                 combinedLabel = mobileLabel;
@@ -1256,18 +1287,34 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
                     wifiLabel += "xxxxXXXXxxxxXXXX";
                 }
                 switch (mWifiActivity) {
+//glg 20150105---begin
+//commented out
+//                    case WifiManager.DATA_ACTIVITY_IN:
+//                        mWifiActivityIconId = R.drawable.stat_sys_wifi_in;
+//                        break;
+//                    case WifiManager.DATA_ACTIVITY_OUT:
+//                        mWifiActivityIconId = R.drawable.stat_sys_wifi_out;
+//                        break;
+//                    case WifiManager.DATA_ACTIVITY_INOUT:
+//                        mWifiActivityIconId = R.drawable.stat_sys_wifi_inout;
+//                        break;
+//                    case WifiManager.DATA_ACTIVITY_NONE:
+//                        mWifiActivityIconId = R.drawable.stat_sys_wifi_noinout;
+//                        break;
+//inserted/
                     case WifiManager.DATA_ACTIVITY_IN:
-                        mWifiActivityIconId = R.drawable.stat_sys_wifi_in;
+                        mWifiActivityIconId = WifiIcons.WIFI_DATA_IN[mInetCondition][mWifiLevel];
                         break;
                     case WifiManager.DATA_ACTIVITY_OUT:
-                        mWifiActivityIconId = R.drawable.stat_sys_wifi_out;
+                        mWifiActivityIconId = WifiIcons.WIFI_DATA_OUT[mInetCondition][mWifiLevel];
                         break;
                     case WifiManager.DATA_ACTIVITY_INOUT:
-                        mWifiActivityIconId = R.drawable.stat_sys_wifi_inout;
+                        mWifiActivityIconId = WifiIcons.WIFI_DATA_INOUT[mInetCondition][mWifiLevel];
                         break;
                     case WifiManager.DATA_ACTIVITY_NONE:
                         mWifiActivityIconId = R.drawable.stat_sys_wifi_noinout;
                         break;
+//glg---end                      
                 }
             }
 

@@ -94,7 +94,10 @@ import java.util.Locale;
 public abstract class BaseStatusBar extends SystemUI implements
         CommandQueue.Callbacks {
     public static final String TAG = "StatusBar";
-    public static final boolean DEBUG = false;
+    //glg 20150123---begin
+    //changed debug drom false to true
+    public static final boolean DEBUG = true;
+    //glg---end
     public static final boolean MULTIUSER_DEBUG = false;
 
     protected static final int MSG_TOGGLE_RECENTS_PANEL = 1020;

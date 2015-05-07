@@ -26,6 +26,11 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+//glg 20141230---begin
+//insert/
+import android.widget.TextView;
+//glg---end
+
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.policy.NetworkController;
@@ -60,6 +65,11 @@ public class SignalClusterView
     ViewGroup mWifiGroup, mMobileGroup;
     ImageView mWifi, mMobile, mWifiActivity, mMobileActivity, mMobileType, mAirplane, mNoSimSlot,
         mEthernet;
+//glg 20141230---begin
+//insert/
+    TextView mGlg;
+    private Context ctx;
+//glg---end
     View mSpacer;
 
     public SignalClusterView(Context context) {
@@ -72,6 +82,10 @@ public class SignalClusterView
 
     public SignalClusterView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+//glg 20141230---begin
+//insert/  
+	ctx = context;
+//glg---end
     }
 
     public void setNetworkController(NetworkController nc) {
@@ -83,9 +97,18 @@ public class SignalClusterView
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        mWifiGroup      = (ViewGroup) findViewById(R.id.wifi_combo);
+//glg 20141230---begin
+//insert/
+	    mGlg = new TextView(ctx);
+	    mGlg.setText(" <->");
+//glg---end
+		mWifiGroup      = (ViewGroup) findViewById(R.id.wifi_combo);
         mWifi           = (ImageView) findViewById(R.id.wifi_signal);
         mWifiActivity   = (ImageView) findViewById(R.id.wifi_inout);
+//glg 20141230---begin
+//insert/
+	    addView(mGlg);
+//glg---end
         mMobileGroup    = (ViewGroup) findViewById(R.id.mobile_combo);
         mMobile         = (ImageView) findViewById(R.id.mobile_signal);
         mMobileActivity = (ImageView) findViewById(R.id.mobile_inout);
@@ -103,6 +126,10 @@ public class SignalClusterView
         mWifiGroup      = null;
         mWifi           = null;
         mWifiActivity   = null;
+//glg 20150103---begin
+//insert/
+	    //mGlg=null;    ???? ez ok itt?
+//glg---end
         mMobileGroup    = null;
         mMobile         = null;
         mMobileActivity = null;
@@ -125,6 +152,16 @@ public class SignalClusterView
 
         apply();
     }
+//glg 20150103---begin
+//insert/
+    @Override
+    public void setGlgText(String textValue) {
+        if (mGlg==null){;}
+        else
+           mGlg.setText(textValue);
+        apply();
+    }
+//glg---end
 
     @Override
     public void setMobileDataIndicators(boolean visible, int strengthIcon, int activityIcon,

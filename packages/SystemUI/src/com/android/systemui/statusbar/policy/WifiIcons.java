@@ -20,11 +20,20 @@ import com.android.systemui.R;
 
 class WifiIcons {
     static final int[][] WIFI_SIGNAL_STRENGTH = {
-            { R.drawable.stat_sys_wifi_signal_0,
-              R.drawable.stat_sys_wifi_signal_1_fully,
-              R.drawable.stat_sys_wifi_signal_2_fully,
-              R.drawable.stat_sys_wifi_signal_3_fully,
-              R.drawable.stat_sys_wifi_signal_4_fully },
+//glg 20150123---begin
+//commented out		
+//            { R.drawable.stat_sys_wifi_signal_0,
+//              R.drawable.stat_sys_wifi_signal_1_fully,
+//              R.drawable.stat_sys_wifi_signal_2_fully,
+//              R.drawable.stat_sys_wifi_signal_3_fully,
+//              R.drawable.stat_sys_wifi_signal_4_fully },
+//inserted
+            { R.drawable.stat_sys_wifi_signal_00,
+              R.drawable.stat_sys_wifi_signal_1,
+              R.drawable.stat_sys_wifi_signal_2,
+              R.drawable.stat_sys_wifi_signal_3,
+              R.drawable.stat_sys_wifi_signal_4},
+//glg---end
             { R.drawable.stat_sys_wifi_signal_0,
               R.drawable.stat_sys_wifi_signal_1_fully,
               R.drawable.stat_sys_wifi_signal_2_fully,
@@ -44,6 +53,44 @@ class WifiIcons {
               R.drawable.ic_qs_wifi_full_3,
               R.drawable.ic_qs_wifi_full_4 }
         };
-
+//glg 20150305---begin
+//insert/
+	static final int[][] WIFI_DATA_IN = {
+            { R.drawable.stat_sys_wifi_in_0,
+              R.drawable.stat_sys_wifi_in_1,
+              R.drawable.stat_sys_wifi_in_2,
+              R.drawable.stat_sys_wifi_in_3,
+              R.drawable.stat_sys_wifi_in_4 },
+            { R.drawable.stat_sys_wifi_in_0,
+              R.drawable.stat_sys_wifi_in_full_1,
+              R.drawable.stat_sys_wifi_in_full_2,
+              R.drawable.stat_sys_wifi_in_full_3,
+              R.drawable.stat_sys_wifi_in_full_4 }
+        };
+	static final int[][] WIFI_DATA_OUT = {
+            { R.drawable.stat_sys_wifi_out_0,
+              R.drawable.stat_sys_wifi_out_1,
+              R.drawable.stat_sys_wifi_out_2,
+              R.drawable.stat_sys_wifi_out_3,
+              R.drawable.stat_sys_wifi_out_4 },
+            { R.drawable.stat_sys_wifi_out_0,
+              R.drawable.stat_sys_wifi_out_full_1,
+              R.drawable.stat_sys_wifi_out_full_2,
+              R.drawable.stat_sys_wifi_out_full_3,
+              R.drawable.stat_sys_wifi_out_full_4 }
+        };
+	static final int[][] WIFI_DATA_INOUT = {
+            { R.drawable.stat_sys_wifi_inout_0,
+              R.drawable.stat_sys_wifi_inout_1,
+              R.drawable.stat_sys_wifi_inout_2,
+              R.drawable.stat_sys_wifi_inout_3,
+              R.drawable.stat_sys_wifi_inout_4 },
+            { R.drawable.stat_sys_wifi_inout_0,
+              R.drawable.stat_sys_wifi_inout_full_1,
+              R.drawable.stat_sys_wifi_inout_full_2,
+              R.drawable.stat_sys_wifi_inout_full_3,
+              R.drawable.stat_sys_wifi_inout_full_4 }
+        };
+//glg---end
     static final int WIFI_LEVEL_COUNT = WIFI_SIGNAL_STRENGTH[0].length;
 }
